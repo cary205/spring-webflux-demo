@@ -19,10 +19,20 @@ public class MongoConfig extends AbstractReactiveMongoConfiguration
      
     @Value("${dbname}")
     private String dbName;
+    
+    @Value("${dbhost}")
+    private String dbHost;
+    
+    @Value("${dbuser}")
+    private String dbUser;
+    
+    @Value("${dbpassword}")
+    private String dbPassword;
  
     @Override
     public MongoClient reactiveMongoClient() {
-        return MongoClients.create();
+        //return MongoClients.create();
+        return MongoClients.create("mongodb://" + dbUser + ":" + dbPassword + "@" + dbHost + ":" + port + "/" + dbName);
     }
  
     @Override
