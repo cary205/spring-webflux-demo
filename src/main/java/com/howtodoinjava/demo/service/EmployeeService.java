@@ -30,6 +30,10 @@ public class EmployeeService implements IEmployeeService {
     public Flux<Employee> findAll() {
         return employeeRepo.findAll();
     }
+
+    public Flux<Employee> findWithTailableCursorBy() {
+        return employeeRepo.findWithTailableCursorBy();
+    }
  
     public Mono<Employee> update(Employee e) {
         return employeeRepo.save(e);

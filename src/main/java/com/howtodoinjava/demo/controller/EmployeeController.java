@@ -1,9 +1,14 @@
 package com.howtodoinjava.demo.controller;
 
+import java.time.Duration;
+import java.time.LocalTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,7 +52,14 @@ public class EmployeeController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ResponseBody
     public Flux<Employee> findAll() {
-        Flux<Employee> emps = employeeService.findAll();
+        Flux<Employee> emps = employeeService.findAll().delayElements(Duration.ofMillis(1500));
+        return emps;
+    }
+
+    @RequestMapping(value = "/tail", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @ResponseBody
+    public Flux<Employee> findWithTailableCursorBy() {
+        Flux<Employee> emps = employeeService.findWithTailableCursorBy().delayElements(Duration.ofMillis(1500));
         return emps;
     }
  
@@ -61,6 +73,22 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public void delete(@PathVariable("id") Integer id) {
         employeeService.delete(id).subscribe();
+    }
+
+    @GetMapping("/stream-sse")
+    public Flux<ServerSentEvent<String>> streamEvents() {
+    	return Flux.interval(Duration.ofSeconds(1))
+			.map(sequence -> ServerSentEvent.<String> builder()
+				.id(String.valueOf(sequence))
+				.event("periodic-event")
+				.data("SSE - " + LocalTime.now().toString())
+				.build()
+			);
+    }
+    
+    @RequestMapping(path = "/stream-string", method = RequestMethod.GET, produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamManual() {
+    	return Flux.just("AA", "BB", "CC").delayElements(Duration.ofMillis(1500));
     }
  
 }
