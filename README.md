@@ -7,9 +7,7 @@
 ### Configuration
 
 ``` shell
-$ export WEBFLUX_dbhost=<YOUR_dbhost>
-$ export WEBFLUX_dbuser=<YOUR_dbuser>
-$ export WEBFLUX_dbpassword=<YOUR_dbpassword>
+$ export WEBFLUX_dbUrl=<YOUR_db_connection_string>
 ```
 
 ### Run

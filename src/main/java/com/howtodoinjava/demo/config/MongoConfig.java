@@ -14,27 +14,18 @@ import com.mongodb.reactivestreams.client.MongoClients;
 @EnableReactiveMongoRepositories(basePackages = "com.howtodoinjava.demo.dao")
 public class MongoConfig extends AbstractReactiveMongoConfiguration
 {  
-    @Value("${port}")
-    private String port;
-     
     @Value("${dbname}")
     private String dbName;
     
-    @Value("${dbhost}")
-    private String dbHost;
-    
-    @Value("${dbuser}")
-    private String dbUser;
-    
-    @Value("${dbpassword}")
-    private String dbPassword;
+    @Value("${dbUrl}")
+    private String dbUrl;
  
     @Override
     public MongoClient reactiveMongoClient() {
         //return MongoClients.create();
-        return MongoClients.create("mongodb://" + dbUser + ":" + dbPassword + "@" + dbHost + ":" + port + "/" + dbName);
+        return MongoClients.create(dbUrl);
     }
- 
+    
     @Override
     protected String getDatabaseName() {
         return dbName;
